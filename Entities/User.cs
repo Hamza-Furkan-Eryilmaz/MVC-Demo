@@ -25,6 +25,9 @@ namespace MvcDemo.Entities
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
+        [StringLength(255)]
+        public string ProfilePictureFileName { get; set; } = "noimage.png";
+
         [Required]
         [StringLength(50)]
         public string Role { get; set; } = "user";

@@ -133,6 +133,7 @@ namespace MvcDemo.Controllers
             User user = _mvcContext.Users.SingleOrDefault(x => x.Id == userId);
 
             ViewData["FullName"] = user.FullName;
+            ViewData["ProfileImage"] = user.ProfilePictureFileName;
         }
 
         [HttpPost]
@@ -184,6 +185,35 @@ namespace MvcDemo.Controllers
             return RedirectToAction(nameof(Login));
         }
 
-        
+        [HttpPost]
+        public IActionResult ProfileChangeImage([Required]IFormFile file)
+        {
+            if (ModelState.IsValid)
+            {
+                Guid userId = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+                User user = _mvcContext.Users.SingleOrDefault(x => x.Id == userId);
+
+                string fileName = $"p_{userId}.png";
+                Stream stream = new FileStream($"wwwroot/Uploads/{fileName}",FileMode.OpenOrCreate);
+
+                file.CopyTo(stream);
+                stream.Close();
+                stream.Dispose();
+
+                user.ProfilePictureFileName = fileName;
+
+                _mvcContext.SaveChanges();
+
+                return RedirectToAction(nameof(Profile));
+
+                
+            }
+
+            ProfileInfoLoader();
+            return View("Profile");
+        }
+
+
     }
 }

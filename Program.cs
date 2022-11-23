@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using MvcDemo.Entities;
+using System.Reflection;
 
 namespace MvcDemo
 {
@@ -12,7 +13,7 @@ namespace MvcDemo
 
             // Add services to the container.
             builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
-
+            builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
             builder.Services.AddDbContext<MvcContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"));
@@ -36,6 +37,7 @@ namespace MvcDemo
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+            
             app.UseStaticFiles();
 
             app.UseRouting();

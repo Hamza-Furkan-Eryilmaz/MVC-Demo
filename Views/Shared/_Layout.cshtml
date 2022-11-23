@@ -8,7 +8,7 @@
      <link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/MvcDemo.styles.css" asp-append-version="true" />
-   
+
 </head>
 <body>
     <header>
@@ -27,40 +27,43 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        
+
                         @if (User.Identity.IsAuthenticated)
                         {
                             if (User.IsInRole("Admin"))
                             {
-                                        <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Administrator</a>
-                                    </li>
+                        <li class="nav-item dropdown">
+                          <a class="nav-link dropdown-toggle" asp-action="Index" asp-controller="Admin" role="button" data-bs-toggle="dropdown" aria-expanded="false">Administrator</a>
+                          <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" asp-action="Index" asp-controller="User">Users</a></li>
+                          </ul>
+                        </li>
                             }
-                                 
-                                 <li class="nav-item ms-auto">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Accounts" asp-action="Profile">
-                                        <i class="fa-solid fa-user me-2"></i>@User.FindFirst("Username").Value</a>
-                                </li>
-                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Accounts" asp-action="Logout">
-                                        <i class="fa-solid fa-right-from-bracket me-2"></i>Logout</a>
-                                </li>   
+
+                                     <li class="nav-item ms-auto">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Accounts" asp-action="Profile">
+                                            <i class="fa-solid fa-user me-2"></i>@User.FindFirst("Username").Value</a>
+                                    </li>
+                                     <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Accounts" asp-action="Logout">
+                                            <i class="fa-solid fa-right-from-bracket me-2"></i>Logout</a>
+                                    </li>   
                         }
 
                         else
                         {
-                                     <li class="nav-item ms-auto">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Accounts" asp-action="Login">
-                                        <i class="fa-solid fa-right-to-bracket me-2"></i>Login</a>
-                                </li>
-                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Accounts" asp-action="Register">
-                                        <i class="fa-solid fa-user me-2"></i>Register</a>
-                                </li>
+                                         <li class="nav-item ms-auto">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Accounts" asp-action="Login">
+                                            <i class="fa-solid fa-right-to-bracket me-2"></i>Login</a>
+                                    </li>
+                                     <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Accounts" asp-action="Register">
+                                            <i class="fa-solid fa-user me-2"></i>Register</a>
+                                    </li>
 
                         }
 
-                                              
+
                     </ul>
                 </div>
             </div>
