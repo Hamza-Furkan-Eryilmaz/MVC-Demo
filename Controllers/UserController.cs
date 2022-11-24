@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using MvcDemo.Entities;
+using MvcDemo.Helpers;
 using MvcDemo.Models;
 using System.Linq;
 
@@ -10,12 +11,14 @@ namespace MvcDemo.Controllers
     {
         private readonly MvcContext _mvcContext;
         private readonly IMapper _mapper;
+        private readonly IHasher _hasher;
 
-        public UserController(MvcContext mvcContext, IMapper mapper)
+        public UserController(MvcContext mvcContext, IMapper mapper, IHasher hasher)
         {
             _mvcContext = mvcContext;
             _mapper = mapper;
-        } 
+            _hasher = hasher;
+        }
 
         public IActionResult Index()
         {
@@ -44,6 +47,7 @@ namespace MvcDemo.Controllers
                 }
 
                 User user=_mapper.Map<User>(model);
+                user.Password=_hasher.MD5SaltAndHash(model.Password);
                 _mvcContext.Users.Add(user);
                 _mvcContext.SaveChanges();
 

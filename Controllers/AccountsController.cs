@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MvcDemo.Entities;
+using MvcDemo.Helpers;
 using MvcDemo.Models;
 using NETCore.Encrypt.Extensions;
 using System.ComponentModel.DataAnnotations;
@@ -16,11 +17,13 @@ namespace MvcDemo.Controllers
     {
         private readonly MvcContext _mvcContext;
         private readonly IConfiguration _configuration;
+        private readonly IHasher _hasher;
 
-        public AccountsController(MvcContext mvcContext, IConfiguration configuration)
+        public AccountsController(MvcContext mvcContext, IConfiguration configuration, IHasher hasher)
         {
             _mvcContext = mvcContext;
             _configuration = configuration;
+            _hasher = hasher;
         }
 
         [AllowAnonymous]
@@ -35,7 +38,7 @@ namespace MvcDemo.Controllers
         {
             if (ModelState.IsValid)
             {
-                string hashedPassword = MD5SaltAndHash(model.Password);
+                string hashedPassword = _hasher.MD5SaltAndHash(model.Password);
 
                 User user = _mvcContext.Users.SingleOrDefault(x => x.Username.ToLower() == model.Username.ToLower() && x.Password == hashedPassword);
 
@@ -70,14 +73,7 @@ namespace MvcDemo.Controllers
             return View();
         }
 
-        private string MD5SaltAndHash(string s)
-        {
-            string md5Salt = _configuration.GetValue<string>("AppSettings:Md5Salt");
-
-            string salted = s + md5Salt;
-            string hashed = salted.MD5();
-            return hashed;
-        }
+        
 
         [AllowAnonymous]
         public IActionResult Register() 
@@ -94,7 +90,7 @@ namespace MvcDemo.Controllers
                 {
                     ModelState.AddModelError(nameof(model.Username),"Username is already exists.");
                 }
-                string hashedPassword = MD5SaltAndHash(model.Password);
+                string hashedPassword = _hasher.MD5SaltAndHash(model.Password);
 
                 User user = new()
                 {
@@ -166,7 +162,7 @@ namespace MvcDemo.Controllers
 
                 User user = _mvcContext.Users.SingleOrDefault(x => x.Id == userId);
 
-                string hashedPassword = MD5SaltAndHash(password);
+                string hashedPassword = _hasher.MD5SaltAndHash(password);
 
                 user.Password = hashedPassword;
 
